@@ -70,7 +70,7 @@ router.get("/symbols", async (req, res, next) => {
     stocks = req.db
       .from("stocks")
       .select("name", "symbol", "industry")
-      // .where("industry", "like", `%${industry}%`);
+      .where("industry", "like", `%${industry}%`);
   } else {
     stocks = req.db.from("stocks").select("name", "symbol", "industry");
   }
@@ -111,7 +111,7 @@ router.get("/:symbol", async (req, res, next) => {
   const queryStocks = req.db
     .from("stocks")
     .select("*")
-    .where({ symbol: symbol })
+    .where({ symbol: symbol });
 
   // If a stock is found, a success response is sent, else a fail response
   queryStocks.then((stocks) => {
