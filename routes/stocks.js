@@ -45,7 +45,7 @@ router.get("/symbols", async (req, res, next) => {
   const queryParams = Object.keys(req.query);
   let industry = undefined;
 
-  // Logic which accounts for invalid query parameters
+  // // Logic which accounts for invalid query parameters
   if (
     !(
       (queryParams.length === 1 && queryParams.includes("industry")) ||
@@ -70,7 +70,7 @@ router.get("/symbols", async (req, res, next) => {
     stocks = req.db
       .from("stocks")
       .select("name", "symbol", "industry")
-      .where("industry", "like", `%${industry}%`);
+      // .where("industry", "like", `%${industry}%`);
   } else {
     stocks = req.db.from("stocks").select("name", "symbol", "industry");
   }
@@ -107,13 +107,11 @@ router.get("/:symbol", async (req, res, next) => {
   // Store the symbol paramter
   const symbol = req.params.symbol;
 
-  // Query the stock database if a stock symbol is provided
+  // Query the stock database if a stock symbol is provided, retrieves the most recent stock by default
   const queryStocks = req.db
     .from("stocks")
     .select("*")
     .where({ symbol: symbol })
-    .max({ timestamp: "timestamp" })
-    .havingNotNull("symbol");
 
   // If a stock is found, a success response is sent, else a fail response
   queryStocks.then((stocks) => {
@@ -128,7 +126,7 @@ router.get("/:symbol", async (req, res, next) => {
 
     console.log("Stock found");
 
-    const [stock] = stocks;
+    const [stock] = stocks; // Gets index 0, (most recent stock)
     res.status(200).json(stock);
   });
 });
